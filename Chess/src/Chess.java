@@ -10,40 +10,40 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 public class Chess extends Frame {
-    private Timer timer = null; //타이머
+    private Timer timer = null; 
 
-    private final int sql=80; //체스 정사각형 한칸의 길이
-    private final int w=1230, h=900; //가로길이 및 세로 길이
-    public piece board[][]= new piece [8][8]; //말을 올려 놓을 보드, piece64개를 나타내고 말이 위에 없다면 null값을 가짐
+    private final int sql=80; 
+    private final int w=1230, h=900; 
+    public piece board[][]= new piece [8][8]; 
 
-    private boolean[][] onClick = new boolean [8][8]; //클릭되었는지 확인
-    private boolean firstClick = true; //첫 번째 클릭인지 확인
-    private boolean Moveable[][] = new boolean[8][8]; //해당 말이 움직일 수 있는 공간인지 확인
+    private boolean[][] onClick = new boolean [8][8]; 
+    private boolean firstClick = true; 
+    private boolean Moveable[][] = new boolean[8][8]; 
 
-    private boolean bqc, bkc, wqc, wkc; //캐슬링 가능 여부, black queen castling
+    private boolean bqc, bkc, wqc, wkc; 
 
-    private String turn = "white"; //누구의 순서인지 나타내는 변수
+    private String turn = "white"; 
     
     private int ci, cj;
-    private int MaxTime=300; //최대시간
-    private int Inc=20; //매 수마다 추가되는 시간
-    private int wtime, btime; //백과 흑이 각각 남은 시간
-    private int nmoves; //총 움직임 횟수
+    private int MaxTime=300; 
+    private int Inc=20; 
+    private int wtime, btime; 
+    private int nmoves; 
     
-    private Label lWhiteTimer = null; //백의 남은 시간을 나타내는 라벨
-    private Label lBlackTimer = null; //흑의 남은 시간을 나타내는 라벨
+    private Label lWhiteTimer = null; 
+    private Label lBlackTimer = null; 
 
-    private JButton bForfeit = null; //항복
-    private JButton bDraw = null; //무승부 하자는 신호 
-    private JButton bStart = null; //재시작
-    private JButton bSettime = null; //시간 설정 
+    private JButton bForfeit = null; 
+    private JButton bDraw = null;  
+    private JButton bStart = null;
+    private JButton bSettime = null; 
 
-    private JButton bBoard[][] = new JButton[8][8]; //전체 보드
+    private JButton bBoard[][] = new JButton[8][8]; 
 
-    private ImageIcon icon_light = new ImageIcon("pic/light.png"); //밝은 칸 icon
-    private ImageIcon icon_dark = new ImageIcon("pic/dark.png"); //어두운 칸을 icon
+    private ImageIcon icon_light = new ImageIcon("pic/light.png");
+    private ImageIcon icon_dark = new ImageIcon("pic/dark.png"); 
 
-    class BoardState{ //체스판의 상태를 저장
+    class BoardState{ 
         int board[][] = new int[8][8];
         String turn;
         boolean bqc, bkc, wqc, wkc;
@@ -52,13 +52,13 @@ public class Chess extends Frame {
 
     BoardState[] bstate = new BoardState[600];
 
-    abstract class piece{ //말 클래스
-        int i, j; //말의 위치 
-        String color, boardcolor, name; //말의 색, 말이 위치한 보드 칸의 색, 말의 종류
-        int ind; //말의 종류를 나타내는 정수 => BoardState클래스에는 board[][]를 int로 설정했기 때문에 int 타입의 ind로 표시
-        ImageIcon Icon, clickIcon; //그냥 있을 때 아이콘, 클릭되었을 때 아이콘 
+    abstract class piece{
+        int i, j; 
+        String color, boardcolor, name; 
+        int ind; 
+        ImageIcon Icon, clickIcon;
 
-        void move(int a, int b){ //말을 찍은 위치로 이동
+        void move(int a, int b){ 
         	
             this.i=a;
             this.j=b;
@@ -70,11 +70,11 @@ public class Chess extends Frame {
         }
         
         
-        abstract void setMoveable(); //움직일 수 있는 공간 결정
+        abstract void setMoveable();
     }
 
-    class Pawn extends piece{ //폰 클래스 구현
-        Pawn(int a, int b, String c){ //생성자로 초기값 결정
+    class Pawn extends piece{ 
+        Pawn(int a, int b, String c){
             this.i=a;
             this.j=b;
             this.color=c;
@@ -95,7 +95,7 @@ public class Chess extends Frame {
             if ((this.i+this.j)%2==0) this.boardcolor = "light";
             else this.boardcolor = "dark";
 
-            if(this.i==0 || this.i==7){ //폰이 끝에 도달했을 때
+            if(this.i==0 || this.i==7){
                 Object[] promotion = {"Knight", "Bishop", "Rook", "Queen"};
                 Label label = new Label("Promote to another piece: ");
                 label.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -113,7 +113,7 @@ public class Chess extends Frame {
                         if(this.i+1 == i){
                             if(board[i][j]==null){
                                 if(j==this.j) {
-                                	Moveable[i][j]=true; //폰은 앞으로 한 칸 전진할 수 있다
+                                	Moveable[i][j]=true;
                                 	continue;
                                 }
                                 else{
@@ -122,7 +122,7 @@ public class Chess extends Frame {
                                 }
                             }
                             else if(board[i][j].color=="white" && (Math.abs(this.j-j)==1)) {
-                            	Moveable[i][j]=true; //폰은 상대 말을 잡을 때에는 대각선으로 한 칸 이동한다
+                            	Moveable[i][j]=true; 
                             	continue;
                             }
                             else {
@@ -136,7 +136,7 @@ public class Chess extends Frame {
                         }
                     }
                 }
-                if(this.i==1 && board[3][j]==null) Moveable[3][j]=true; //처음 움직이는 폰은 두 칸 움직일 수 있다
+                if(this.i==1 && board[3][j]==null) Moveable[3][j]=true;
             }
             else{
                 for(int i=0; i<8; i++){
@@ -172,8 +172,8 @@ public class Chess extends Frame {
         }
     }
 
-    class Knight extends piece{ //나이트
-        Knight(int a, int b, String c){ //생성자로 초기값 설정
+    class Knight extends piece{ 
+        Knight(int a, int b, String c){
             this.i=a;
             this.j=b;
             this.color=c;
@@ -191,9 +191,9 @@ public class Chess extends Frame {
             if(this.color=="black"){
                 for(int i=0; i<8; i++) {
                     for (int j = 0; j < 8; j++) {
-                        if ((Math.abs(this.i-i) == 2 && Math.abs(this.j-j) == 1) || (Math.abs(this.i-i) == 1 && Math.abs(this.j-j) == 2)) { //나이트는 한 방향으로 두 칸 이동하고 수직한 방향으로 한 칸 이동한다
+                        if ((Math.abs(this.i-i) == 2 && Math.abs(this.j-j) == 1) || (Math.abs(this.i-i) == 1 && Math.abs(this.j-j) == 2)) { 
                             if (board[i][j] == null) Moveable[i][j] = true;
-                            else if (board[i][j].color == "white") Moveable[i][j] = true; //이동한 최종 위치에 상대 기물이 있으면 잡을 수 있다
+                            else if (board[i][j].color == "white") Moveable[i][j] = true;
                             else Moveable[i][j] = false;
                         }
                         else Moveable[i][j] = false;
@@ -215,7 +215,7 @@ public class Chess extends Frame {
         }
     }
 
-    class Bishop extends piece{ //비숍 클래스
+    class Bishop extends piece{ 
         Bishop(int a, int b, String c){ 
             this.i=a;
             this.j=b;
@@ -328,8 +328,8 @@ public class Chess extends Frame {
         }
     }
 
-    class Rook extends piece{ //룩 클래스 구현
-        Rook(int a, int b, String c){ //생성자를 통한 초기값 설정
+    class Rook extends piece{ 
+        Rook(int a, int b, String c){
             this.i=a;
             this.j=b;
             this.color=c;
@@ -344,8 +344,8 @@ public class Chess extends Frame {
         }
 
         @Override
-        void move(int a, int b){ //캐슬링 관련 규칙을 위한 Overriding
-            if(this.j==0 && this.color=="black") bqc=false; //룩이 움직이면 그 방향으로는 캐슬링할 수 없다
+        void move(int a, int b){ 
+            if(this.j==0 && this.color=="black") bqc=false;
             if(this.j==7 && this.color=="black") bkc=false;
             if(this.j==0 && this.color=="white") wqc=false;
             if(this.j==0 && this.color=="white") wkc=false;
@@ -358,7 +358,7 @@ public class Chess extends Frame {
             Icon=new ImageIcon("pic/"+this.color+"_"+this.name+"_"+this.boardcolor+".png");
         }
 
-        void setMoveable(){ //룩은 평행선으로 원하는 만큼 이동할 수 있다. 단, 앞에 말이 가로막고 있으면 이동할 수 없고 상대 말이면 그 말을 잡을 수 있다
+        void setMoveable(){ 
             for(int i=0; i<8; i++) for(int j=0; j<8; j++) Moveable[i][j]=false;
             if(this.color=="black"){
                 for(int i=this.i+1; i<8; i++){ //아래쪽 방향
@@ -438,8 +438,8 @@ public class Chess extends Frame {
         }
     }
 
-    class Queen extends piece{ //퀸 클래스 구현
-        Queen(int a, int b, String c){ //생성자를 통한 초기값 설정
+    class Queen extends piece{  
+        Queen(int a, int b, String c){  
             this.i=a;
             this.j=b;
             this.color=c;
@@ -453,7 +453,7 @@ public class Chess extends Frame {
             this.ind=5;
         }
 
-        void setMoveable(){ //퀸은 평행선으로, 대각선으로 원하는 만큼 이동할 수 있다. 단, 앞에 말이 가로막고 있으면 이동할 수 없고 상대 말이면 그 말을 잡을 수 있다
+        void setMoveable(){  
             for(int i=0; i<8; i++) for(int j=0; j<8; j++) Moveable[i][j]=false;
 
             if(this.color=="black"){
@@ -622,8 +622,8 @@ public class Chess extends Frame {
         }
     }
 
-    class King extends piece{ //킹 클래스 구현
-        King(int a, int b, String c){ //생성자를 통한 초기값 설정
+    class King extends piece{  
+        King(int a, int b, String c){  
             this.i=a;
             this.j=b;
             this.color=c;
@@ -637,7 +637,7 @@ public class Chess extends Frame {
             this.ind=6;
         }
 
-        void move(int a, int b){ //캐슬링 규정을 위한 Overriding. 킹이 한 번 움직이면 더 이상 캐슬링 할 수 없다
+        void move(int a, int b){  
             if(this.color=="black") {bqc=false; bkc=false;}
             if(this.color=="white") {wqc=false; wkc=false;}
 
@@ -683,24 +683,22 @@ public class Chess extends Frame {
     }
 
     public static void main(String[] args){
-        new Chess(); //시작
+        new Chess(); 
     }
 
     Chess(){
-        makeGUI(); //GUI 만들기
-        initGame(); //게임 초기화
+        makeGUI();  
+        initGame();  
     }
 
-    void makeGUI() { //GUI 제작
-        setSize(w, h); //Frame 크기 설정
+    void makeGUI() {  
+        setSize(w, h);   
         
-        Panel controls = new Panel(); //버튼들이 위치할 panel
-        Panel labels = new Panel(); //라벨들이 위치할 panel
-        add(controls, BorderLayout.SOUTH); //버튼들은 아래쪽
-        add(labels, BorderLayout.NORTH); //라벨들은 위쪽
-
-        Font font = new Font("Arial", Font.PLAIN, 20); //폰트 설정
-
+        Panel controls = new Panel();  
+        Panel labels = new Panel();  
+        add(controls, BorderLayout.SOUTH);  
+        add(labels, BorderLayout.NORTH); 
+        Font font = new Font("Arial", Font.PLAIN, 20);
         lWhiteTimer = new Label("White:                    ");
         lBlackTimer = new Label("Black:                    ");
         lWhiteTimer.setSize(new Dimension(150, 50));
